@@ -12,10 +12,13 @@ import (
 var Conf = new(AppConfig)
 
 type AppConfig struct {
-	Name         string `mapstructure:"name"`
-	Mode         string `mapstructure:"mode"`
-	Version      string `mapstructure:"version"`
-	Port         int    `mapstructure:"port"`
+	Name      string `mapstructure:"name"`
+	Mode      string `mapstructure:"mode"`
+	Version   string `mapstructure:"version"`
+	StartTime string `mapstructure:"start_time"`
+	MachineID int64  `mapstructure:"machine_id"`
+	Port      int    `mapstructure:"port"`
+
 	*LogConfig   `mapstructure:"log"`
 	*MySQLConfig `mapstructure:"mysql"`
 	*RedisConfig `mapstructure:"redis"`
@@ -33,7 +36,7 @@ type MySQLConfig struct {
 	Host         string `mapstructure:"host"`
 	User         string `mapstructure:"user"`
 	Password     string `mapstructure:"password"`
-	DbName       string `mapstructure:"db_name"`
+	DbName       string `mapstructure:"dbname"`
 	Port         int    `mapstructure:"port"`
 	MaxOpenConns int    `mapstructure:"max_open_conns"`
 	MaxIdleConns int    `mapstructure:"max_idle_conns"`
@@ -48,8 +51,12 @@ type RedisConfig struct {
 }
 
 func Init() (err error) {
-	viper.SetConfigFile("config.yaml")
-	//viper.SetConfigName("config") // 指定配置文件名称 （不需要带后缀)
+	// 方法1：直接指定配置文件路径（相对路径或者绝对路径）
+	//viper.SetConfigFile("conf.yaml")
+
+	// 方式2：指定配置文件名和配置文件的位置，viper自行查找可用的配置文件
+	//配置文件位置可配置多个
+	viper.SetConfigName("config") // 指定配置文件名称 （不需要带后缀)
 	//viper.SetConfigType("yaml")   // 指定配置文件类型 (专用于远程获取配置信息时指定文件类型)
 	viper.AddConfigPath(".")   // 指定查找配置文件的路径 (这里使用相对路径)
 	err = viper.ReadInConfig() // 读取配置信息
