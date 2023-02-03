@@ -13,7 +13,7 @@ import (
 // 定义一个全局对象db
 var db *sqlx.DB
 
-// 定义一个初始化数据库的函数
+// Init 定义一个初始化数据库的函数
 func Init(cfg *settings.MySQLConfig) (err error) {
 	// DSN:Data Source Name
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
