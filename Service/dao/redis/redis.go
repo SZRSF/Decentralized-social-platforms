@@ -2,24 +2,24 @@ package redis
 
 import (
 	"fmt"
+	"zengzhicheng/Decentralized-social-platforms/settings"
 
 	"github.com/go-redis/redis"
-	"github.com/spf13/viper"
 )
 
 // 声明一个全局rdb变量
 var rbd *redis.Client
 
 // 初始化连接
-func Init() (err error) {
+func Init(cfg *settings.RedisConfig) (err error) {
 	rdb := redis.NewClient(&redis.Options{
 		Addr: fmt.Sprintf("%s:%d",
-			viper.GetString("redis.host"),
-			viper.GetInt("redis.port"),
+			cfg.Host,
+			cfg.Port,
 		),
-		Password: viper.GetString("redis.password"), // 密码
-		DB:       viper.GetInt("redis.db"),          // 数据库
-		PoolSize: viper.GetInt("redis.pool_size"),   // 连接池大小
+		Password: cfg.Password, // 密码
+		DB:       cfg.Db,       // 数据库
+		PoolSize: cfg.PoolSize, // 连接池大小
 	})
 
 	_, err = rdb.Ping().Result()
