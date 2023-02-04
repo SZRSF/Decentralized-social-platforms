@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"zengzhicheng/Decentralized-social-platforms/controller"
 	"zengzhicheng/Decentralized-social-platforms/logger"
+	"zengzhicheng/Decentralized-social-platforms/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,8 +17,17 @@ func Setup() *gin.Engine {
 	r.POST("/signup", controller.SignUpHandler)
 	r.POST("/login", controller.LoginHandler)
 
-	r.GET("/", func(c *gin.Context) {
-		c.String(http.StatusOK, "ok")
+	r.GET("/ping", middlewares.JWTAuthMiddleware(), func(c *gin.Context) {
+		// 如果是登录的用户, 判断请求头中是否有 有效的JWT
+		isLogin := true
+		c.Request.Header.Get("Authorization")
+		if isLogin {
+			c.String(http.StatusOK, "pong")
+		} else {
+			// 否则直接返回登录
+			c.String(http.StatusOK, "请登录")
+		}
+
 	})
 	return r
 }
