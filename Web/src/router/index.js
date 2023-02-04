@@ -6,8 +6,8 @@ Vue.use(VueRouter);
 //引入路由组件
 import Home from '@/views/Home'
 import Serach from "@/views/Serach";
-import Login from "@/views/Login";
-import Register from "@/views/Register";
+import Login from "@/views/Login/login";
+import Register from "@/views/Register/register";
 import User from "@/views/User";
 import Works from "@/views/Works";
 

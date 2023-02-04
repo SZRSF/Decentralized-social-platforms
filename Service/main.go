@@ -49,7 +49,7 @@ func main() {
 		fmt.Printf("init validator trans failed, err:%v\n", err)
 	}
 	// 5.注册路由
-	r := routes.Setup()
+	r := routes.SetupRouter()
 	err := r.Run(fmt.Sprintf(":%d", settings.Conf.Port))
 	if err != nil {
 		fmt.Printf("run server failed,err:%v\n", err)
