@@ -16,7 +16,7 @@ var db *sqlx.DB
 // Init 定义一个初始化数据库的函数
 func Init(cfg *settings.MySQLConfig) (err error) {
 	// DSN:Data Source Name
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		cfg.User,
 		cfg.Password,
 		cfg.Host,

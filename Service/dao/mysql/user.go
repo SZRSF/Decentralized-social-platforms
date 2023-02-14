@@ -4,7 +4,6 @@ import (
 	"crypto/md5"
 	"database/sql"
 	"encoding/hex"
-	"errors"
 	"zengzhicheng/Decentralized-social-platforms/models"
 )
 
@@ -12,12 +11,6 @@ import (
 // 待logic层根据业务需求调用
 
 const secret = "zengzhicheng"
-
-var (
-	ErrorUserExist       = errors.New("用户已存在")
-	ErrorUserNotExist    = errors.New("用户不存在")
-	ErrorInvalidPassword = errors.New("密码错误")
-)
 
 // CheckUserExist 检查指定用户名的用户是否纯在s
 func CheckUserExist(username string) (err error) {
@@ -65,5 +58,13 @@ func Login(user *models.User) (err error) {
 	if password != user.Password {
 		return ErrorInvalidPassword
 	}
+	return
+}
+
+// GetUserById 根据id获取用户的信息
+func GetUserById(uid int64) (user *models.User, err error) {
+	user = new(models.User)
+	sqlStr := `select user_id, user_name from user where user_id = ?`
+	err = db.Get(user, sqlStr, uid)
 	return
 }
