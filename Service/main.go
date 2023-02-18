@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"zengzhicheng/Decentralized-social-platforms/controller"
+	"zengzhicheng/Decentralized-social-platforms/dao/ipfs"
 	"zengzhicheng/Decentralized-social-platforms/dao/mysql"
 	"zengzhicheng/Decentralized-social-platforms/dao/redis"
 	"zengzhicheng/Decentralized-social-platforms/logger"
@@ -47,6 +48,10 @@ func main() {
 	// 初始化gin框架内置的校验器使用的翻译器
 	if err := controller.InitTrans("zh"); err != nil {
 		fmt.Printf("init validator trans failed, err:%v\n", err)
+	}
+	// 初始化ipfs连接
+	if err := ipfs.Init(); err != nil {
+		fmt.Printf("init  ipfs failed, err:%v\n", err)
 	}
 	// 5.注册路由
 	r := routes.SetupRouter()

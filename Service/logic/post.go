@@ -11,6 +11,8 @@ import (
 func CreatePost(p *models.Post) (err error) {
 	// 1.生成 post id
 	p.ID = snowflake.GenID()
+	// 2.将内容保存到IPFS返回HASH值
+	p.Content = postContent(p.Content)
 	// 2.保存到数据库
 	return mysql.CreatePost(p)
 	// 3. 返回
@@ -24,6 +26,8 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 		zap.L().Error("mysql.GetPostById(pid) failed", zap.Int64("pid", pid), zap.Error(err))
 		return
 	}
+	// 根据hash值从ipfs获取帖子内容
+	post.Content = getContent(post.Content)
 	// 根据作者iud查询作者信息
 	user, err := mysql.GetUserById(post.AuthorID)
 	if err != nil {

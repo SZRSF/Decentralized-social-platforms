@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"zengzhicheng/Decentralized-social-platforms/models"
 
+	"go.uber.org/zap"
+
 	shell "github.com/ipfs/go-ipfs-api"
 )
 
@@ -23,7 +25,7 @@ func Init() (err error) {
 func UploadIPFS(str string) string {
 	hash, err := sh.Add(bytes.NewBufferString(str))
 	if err != nil {
-		fmt.Println("上传ipfs时错误：", err)
+		zap.L().Error("上传ipfs时错误", zap.Error(err))
 	}
 	return hash
 }
@@ -40,21 +42,21 @@ func CatIPFS(hash string) string {
 }
 
 // MarshalStruct 通道序列化
-func MarshalStruct(transaction models.Post) []byte {
+func MarshalStruct(transaction models.PostIPFS) []byte {
 
 	data, err := json.Marshal(&transaction)
 	if err != nil {
-		fmt.Println("序列化err=", err)
+		zap.L().Error("序列化err=", zap.Error(err))
 	}
 	return data
 }
 
 // UnmarshalStruct 数据反序列化为通道
-func UnmarshalStruct(str []byte) models.Post {
-	var transaction models.Post
+func UnmarshalStruct(str []byte) models.PostIPFS {
+	var transaction models.PostIPFS
 	err := json.Unmarshal(str, &transaction)
 	if err != nil {
-		fmt.Printf("unmarshal err=%v\n", err)
+		zap.L().Error("unmarshal err=", zap.Error(err))
 	}
 	return transaction
 }

@@ -12,6 +12,10 @@ type Post struct {
 	CreateTime time.Time `json:"create_time" db:"create_time"`
 }
 
+type PostIPFS struct {
+	Content string `json:"content" binding:"required"`
+}
+
 // ApiPostDetail 作品详情接口
 type ApiPostDetail struct {
 	AuthorName    string          `json:"author_name"`
