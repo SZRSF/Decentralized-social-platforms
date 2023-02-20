@@ -2,14 +2,14 @@
 <template>
   <div class="home_list">
     <ul id="example-1">
-      <li class="home_item" v-for="item in items" :key="item.id">
-        <a class="home_link" :href="item.homeUrl" target="_blank">
+      <li class="home_item" v-for="family in familyList" :key="family.id">
+        <a class="home_link"  target="_blank">
           <el-image
               class="home_logo"
-              :src="item.url"
+              :src="family.headImg"
               fit="fill"></el-image>
           <div class="home_icon">
-            <div class="home_name">{{item.homeName}}</div>
+            <div class="home_name">{{family.name}}</div>
           </div>
         </a>
       </li>
@@ -18,86 +18,26 @@
 </template>
 
 <script>
+import {dspFamilyList} from "@/api";
+
 export default {
   name: "HomeList",
   data() {
     return {
-      items:[
-        {
-          id: '1',
-          homeName: '孙家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '2',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '3',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '4',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '5',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '6',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '7',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '8',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '9',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '10',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '11',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-        {
-          id: '12',
-          homeName: '李家',
-          homeUrl:'',
-          url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg'
-        },
-      ]
+      familyList: []
     }
-  }
+  },
+  methods: {
+    // 获取家的列表
+    getFamilyList() {
+      dspFamilyList().then(res => {
+        this.familyList = res.data;
+      })
+    },
+  },
+  mounted(){
+    this.getFamilyList();
+  },
 }
 </script>
 

@@ -20,23 +20,37 @@ func SignUp(p *models.ParamSignUp) (err error) {
 	// 构造一个User实例
 	user := &models.User{
 		UserID:   userID,
-		Username: p.Username,
+		UserName: p.Username,
 		Password: p.Password,
 	}
 	// 3.保存进数据库
 	return mysql.InsertUser(user)
 }
 
-func Login(p *models.ParamLogin) (token string, err error) {
+func Login(p *models.ParamLogin) (data *models.ApiUser, err error) {
+	var userID int64
 	user := &models.User{
-		Username: p.Username,
+		UserName: p.Username,
 		Password: p.Password,
 	}
 	// 传递的是指针, 就能拿到user.UserID
-	if err := mysql.Login(user); err != nil {
-		return "", err
+	if userID, err = mysql.Login(user); err != nil {
+		return
+	}
+	// 获取用户信息
+	users, err := mysql.GetUserById(userID)
+	if err != nil {
+		return
 	}
 	// 生成JWT
-	return jwt.GenToken(user.UserID, user.Username)
-
+	token, err := jwt.GenToken(user.UserID, user.UserName)
+	if err != nil {
+		return
+	}
+	// 拼接返回数据
+	data = &models.ApiUser{
+		Token: token,
+		User:  users,
+	}
+	return data, err
 }

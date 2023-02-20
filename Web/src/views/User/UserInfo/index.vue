@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="userinfo_title">
-        <span class="userinfo_username ">逝者如斯夫</span>
+        <span class="userinfo_username ">{{userinfo_userdata.username}}</span>
       </div>
       <div class="userinfo_num">
         <div class="userinfo_userdata">
@@ -60,13 +60,14 @@
 </template>
 
 <script>
+// import store from "@/store/user";
 
 export default {
   name: "UserInfo",
   data(){
     return {
       userinfo_userdata: {
-        username:'逝者如斯夫',
+        username: this.$store.getters.donUsers.username,
         age: '18',
         worksNums: '1',
         IP: '广东',

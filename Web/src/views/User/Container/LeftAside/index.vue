@@ -75,41 +75,27 @@
           <span class="cut_line">|</span>
           常串的家
         </h1>
-        <div id="forum_group_wrap" class="clearfix u-f-wrap">
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-          <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
+        <div id="forum_group_wrap" class="clearfix u-f-wrap" >
+          <ul>
+            <li v-for="family in familyList" :key="family.id">
+              <a class="u-f-item unsign">
+                <span>{{family.name}}</span>
+              </a>
+            </li>
+          </ul>
 <!--          <span class="more u-f-item j_show_more_forum">-->
-          <el-collapse class="more u-f-item j_show_more_forum" v-model="activeNames" @change="handleChange">
-              <el-collapse-item  title="展开" name="1">
-                <div>
-                  <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-                  <a class="u-f-item unsign">
-            <span>{{forumGroup.visitHome}}</span>
-          </a>
-                </div>
-              </el-collapse-item>
-           </el-collapse>
+<!--          <el-collapse class="more u-f-item j_show_more_forum" v-model="activeNames" @change="handleChange">-->
+<!--              <el-collapse-item  title="展开" name="1">-->
+<!--                <div>-->
+<!--                  <a class="u-f-item unsign">-->
+<!--            <span>{{family.name}}</span>-->
+<!--          </a>-->
+<!--                  <a class="u-f-item unsign">-->
+<!--            <span>{{family.name}</span>-->
+<!--          </a>-->
+<!--                </div>-->
+<!--              </el-collapse-item>-->
+<!--           </el-collapse>-->
 <!--            <span class="triangle-down"></span>-->
 <!--          </span>-->
         </div>
@@ -127,24 +113,32 @@
 
 <script>
 import HotNewList from "@/components/HotNewList";
+import {dspFamilyList} from "@/api";
 
 export default {
   data() {
     return{
       activeNames: ['1'],
-      forumGroup: {
-        visitHome:"IT之家"
-      }
+      familyList: []
     }
   },
   methods: {
     handleChange(val) {
       console.log(val);
-    }
+    },
+    // 获取家的列表
+    getFamilyList() {
+      dspFamilyList().then(res => {
+        this.familyList = res.data;
+      })
+    },
   },
   components: {
     HotNewList,
-  }
+  },
+  mounted(){
+    this.getFamilyList();
+  },
 }
 </script>
 

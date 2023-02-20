@@ -28,7 +28,7 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 	}
 	// 根据hash值从ipfs获取帖子内容
 	post.Content = getContent(post.Content)
-	// 根据作者iud查询作者信息
+	// 根据作者uid查询作者信息
 	user, err := mysql.GetUserById(post.AuthorID)
 	if err != nil {
 		zap.L().Error("mysql.GetPostById(post.AuthorID) failed",
@@ -46,7 +46,7 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 	}
 	// 接口数据拼接
 	data = &models.ApiPostDetail{
-		AuthorName:   user.Username,
+		AuthorName:   user.UserName,
 		Post:         post,
 		FamilyDetail: family,
 	}
@@ -78,7 +78,7 @@ func GetPostList(page, size int64) (data []*models.ApiPostDetail, err error) {
 			continue
 		}
 		postDetail := &models.ApiPostDetail{
-			AuthorName:   user.Username,
+			AuthorName:   user.UserName,
 			Post:         post,
 			FamilyDetail: family,
 		}

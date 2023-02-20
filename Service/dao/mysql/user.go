@@ -31,7 +31,7 @@ func InsertUser(user *models.User) (err error) {
 	user.Password = encryptPassword(user.Password)
 	// 执行SQL语句入库
 	sqlStr := `insert into user(user_id,user_name,user_password) value (?,?,?)`
-	_, err = db.Exec(sqlStr, user.UserID, user.Username, user.Password)
+	_, err = db.Exec(sqlStr, user.UserID, user.UserName, user.Password)
 	return
 }
 
@@ -42,29 +42,31 @@ func encryptPassword(oPassword string) string {
 	return hex.EncodeToString(h.Sum([]byte(oPassword)))
 }
 
-func Login(user *models.User) (err error) {
+func Login(user *models.User) (userID int64, err error) {
 	oPassword := user.Password // 用户登录的密码
 	sqlStr := `select user_id,user_name,user_password from user where user_name=?`
-	err = db.Get(user, sqlStr, user.Username)
+	err = db.Get(user, sqlStr, user.UserName)
 	if err == sql.ErrNoRows {
-		return ErrorUserNotExist
+		return 0, ErrorUserNotExist
 	}
 	if err != nil {
 		// 查询数据库失败
-		return err
+		return 0, err
 	}
 	// 判断密码是否正确
 	password := encryptPassword(oPassword)
 	if password != user.Password {
-		return ErrorInvalidPassword
+		return 0, ErrorInvalidPassword
 	}
-	return
+	// 获取用户id
+	userID = user.UserID
+	return userID, err
 }
 
 // GetUserById 根据id获取用户的信息
 func GetUserById(uid int64) (user *models.User, err error) {
 	user = new(models.User)
-	sqlStr := `select user_id, user_name from user where user_id = ?`
+	sqlStr := `select user_name, phone_num, emil, gender,  head_img, invite_id, time_stamp, create_time from user where user_id = ?`
 	err = db.Get(user, sqlStr, uid)
 	return
 }

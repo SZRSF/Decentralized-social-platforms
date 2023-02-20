@@ -42,8 +42,8 @@ export default {
   nameL:"Left",
   data() {
     return {
-      username:"逝者如斯夫",
-      squareUrl: "https://gss0.bdstatic.com/6LZ1dD3d1sgCo2Kml5_Y_D3/sys/portrait/item/tb.1.6c7e99dc.naI5KHZoNvYT7ciplr4dxw?t=1668136071",
+      username:this.$store.getters.donUsers.username,
+      squareUrl: this.$store.getters.donUsers.head_img,
       sizeList: ["medium"],
       items: [
         { message: 'Foo' },

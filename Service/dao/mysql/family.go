@@ -8,7 +8,7 @@ import (
 )
 
 func GetFamilyList() (familyList []*models.Family, err error) {
-	sqlStr := "select family_id, family_name from family"
+	sqlStr := "select family_id, family_name, family_head_img from family"
 	if err := db.Select(&familyList, sqlStr); err != nil {
 		if err == sql.ErrNoRows {
 			zap.L().Warn("there is no family in db")
