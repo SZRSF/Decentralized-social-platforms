@@ -17,15 +17,15 @@ log:
   max_backups: 7
 mysql:
   host: ""
-  port: 63916
-  user: "root"
+  port: 
+  user: ""
   password: ""
   dbname: ""
   max_open_conns: 200
   max_idle_conns: 50
 redis:
   host: ""
-  port: 24531
+  port: 
   password: ""
   db: 0
   poll_size: 100
