@@ -9,6 +9,7 @@ import (
 
 // 存放业务逻辑的代码
 
+// SignUp 注册
 func SignUp(p *models.ParamSignUp) (err error) {
 	// 1.判断用户存不存在
 	if err = mysql.CheckUserExist(p.Username); err != nil {
@@ -27,6 +28,7 @@ func SignUp(p *models.ParamSignUp) (err error) {
 	return mysql.InsertUser(user)
 }
 
+// Login 登录
 func Login(p *models.ParamLogin) (data *models.ApiUser, err error) {
 	var userID int64
 	user := &models.User{
@@ -53,4 +55,10 @@ func Login(p *models.ParamLogin) (data *models.ApiUser, err error) {
 		User:  users,
 	}
 	return data, err
+}
+
+// GetUserDetail 根据Id获取用户信息
+func GetUserDetail(id int64) (user *models.User, err error) {
+	user, err = mysql.GetUserById(id)
+	return user, err
 }

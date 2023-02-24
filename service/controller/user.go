@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"strconv"
 	"zengzhicheng/Decentralized-social-platforms/dao/mysql"
 	"zengzhicheng/Decentralized-social-platforms/logic"
 	"zengzhicheng/Decentralized-social-platforms/models"
@@ -44,6 +45,7 @@ func SignUpHandler(c *gin.Context) {
 
 }
 
+// LoginHandler 登录请求函数
 func LoginHandler(c *gin.Context) {
 	// 1.获取请求参数及参数校验
 	p := new(models.ParamLogin)
@@ -71,5 +73,24 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 	// 3.返回响应
+	ResponseSuccess(c, data)
+}
+
+// UserDetailHandler  获取用户信息请求函数
+func UserDetailHandler(c *gin.Context) {
+	// 1.获取社区id
+	idStr := c.Param("user_id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+	}
+
+	// 2.根据id获取用户详情
+	data, err := logic.GetUserDetail(id)
+	if err != nil {
+		zap.L().Error("logic.GetUserDetail failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy) // 不轻易把服务端报错暴露给外面
+		return
+	}
 	ResponseSuccess(c, data)
 }

@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"zengzhicheng/Decentralized-social-platforms/models"
+
+	"go.uber.org/zap"
 )
 
 // 把每一步数据库操作封装成函数
@@ -66,7 +68,12 @@ func Login(user *models.User) (userID int64, err error) {
 // GetUserById 根据id获取用户的信息
 func GetUserById(uid int64) (user *models.User, err error) {
 	user = new(models.User)
-	sqlStr := `select user_name, phone_num, emil, gender,  head_img, invite_id, time_stamp, create_time from user where user_id = ?`
+	sqlStr := `select user_id, user_name, phone_num, emil, gender, head_img, works_count, 
+       follow_count,fans_count , like_count, collect_count, joined_family, browsing_history, invite_id, time_stamp, create_time 
+		from user where user_id = ?`
 	err = db.Get(user, sqlStr, uid)
+	if err != nil {
+		zap.L().Error("GetUserById failed", zap.Error(err))
+	}
 	return
 }

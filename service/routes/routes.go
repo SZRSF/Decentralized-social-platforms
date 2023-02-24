@@ -26,12 +26,20 @@ func SetupRouter() *gin.Engine {
 	v1.Use(middlewares.JWTAuthMiddleware()) // 应用JWT认证中间件
 
 	{
+		// 获取用户信息
+		v1.GET("/user/:user_id", controller.UserDetailHandler)
+
+		// 获取家信息
 		v1.GET("/family", controller.FamilyHandler)
+		// 根据id获取家信息
 		v1.GET("/family/:id", controller.FamilyDetailHandler)
 
+		// 发布文章
 		v1.POST("/post", controller.CreatePostHandler)
+		// 根据id返回文章信息
 		v1.GET("/post/:id", controller.GetPostDetailHandler)
-		v1.GET("/posts/", controller.GetPostListHandler)
+		// 获取作品详细信息
+		v1.GET("/posts", controller.GetPostListHandler)
 	}
 
 	r.NoRoute(func(c *gin.Context) {
