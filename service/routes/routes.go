@@ -38,8 +38,8 @@ func SetupRouter() *gin.Engine {
 		v1.POST("/post", controller.CreatePostHandler)
 		// 根据id返回文章信息
 		v1.GET("/post/:id", controller.GetPostDetailHandler)
-		// 获取作品详细信息
-		v1.GET("/posts", controller.GetPostListHandler)
+		// 获取作品信息
+		v1.GET("/posts/", controller.GetPostListHandler)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

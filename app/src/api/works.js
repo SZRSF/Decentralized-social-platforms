@@ -7,9 +7,10 @@ import request from '@/utils/request'
 /**
  * 请求获取文章列表
  */
-export const getWorksList = () => {
+export const getWorksList = params => {
   return request({
     method: 'GET',
-    url: '/posts'
+    url: '/posts/',
+    params
   })
 }

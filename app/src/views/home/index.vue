@@ -2,7 +2,7 @@
   <div class="home-container">
     <!-- 选择作品显示类型 -->
     <div class="home-tap">
-      <van-tabs class="home-van-tabs" v-model="activeName"  animated swipeable>
+      <van-tabs class="home-van-tabs" v-model="activeName"  animated swipeable >
         <van-tab title="关注" name="followers"  >
           <!-- 作品列表 -->
           <WorksList channel="followers"/>
@@ -52,12 +52,17 @@ export default {
 
 <style scoped lang="less">
 .home-container{
+  padding-top: 100px;
    background-color: #f7f8fa;
   padding-bottom: 100px;
     /deep/ .home-van-tabs {
       .van-tabs__wrap{
+        position: fixed;
+        top: 3px;
+        z-index: 1;
+        left: 0;
+        right: 0;
         height: 82px;
-        margin: 0 auto;
       }
       .van-tab {
         //min-width: 200px;

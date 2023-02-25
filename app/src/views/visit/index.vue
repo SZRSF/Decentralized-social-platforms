@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import { getFamilyList} from '@/api/family'
+import { getFamilyList } from '@/api/family'
 
 export default {
   name: 'VisitIndex',

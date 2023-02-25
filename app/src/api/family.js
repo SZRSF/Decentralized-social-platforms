@@ -3,9 +3,10 @@ import request from '@/utils/request'
 /**
  * 获取家列表
  */
-export const getFamilyList = () => {
+export const getFamilyList = params => {
   return request({
     method: 'GET',
-    url: '/family'
+    url: '/family',
+    params
   })
 }

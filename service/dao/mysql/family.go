@@ -22,7 +22,7 @@ func GetFamilyList() (familyList []*models.Family, err error) {
 func GetFamilyDetailByID(id int64) (family *models.FamilyDetail, err error) {
 	family = new(models.FamilyDetail)
 	sqlStr := `select 
-    			family_id, family_name,introduction, create_time 
+    			family_id, family_name,family_head_img,introduction, create_time 
 				from family 
 				where family_id = ?`
 	if err := db.Get(family, sqlStr, id); err != nil {

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ func getCurrentUserID(c *gin.Context) (userID int64, err error) {
 func getPageInfo(c *gin.Context) (int64, int64) {
 	pageNumStr := c.Query("page")
 	sizeStr := c.Query("size")
+	fmt.Println(pageNumStr, sizeStr)
 
 	var (
 		page int64
