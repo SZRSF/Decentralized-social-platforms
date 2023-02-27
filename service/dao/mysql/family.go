@@ -32,3 +32,17 @@ func GetFamilyDetailByID(id int64) (family *models.FamilyDetail, err error) {
 	}
 	return family, err
 }
+
+func GetMyFamily(userId int64) (myFamilyList []*models.Family, err error) {
+	sqlStr := `SELECT family.family_id, family_name, family_head_img
+				FROM family 
+				INNER JOIN user_family
+				ON family.family_id = user_family.family_id 
+				WHERE user_family.user_id = ? `
+	if err := db.Select(&myFamilyList, sqlStr, userId); err != nil {
+		if err == sql.ErrNoRows {
+			err = ErrorInvalidID
+		}
+	}
+	return myFamilyList, err
+}

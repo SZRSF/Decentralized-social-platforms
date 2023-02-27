@@ -31,8 +31,10 @@ func SetupRouter() *gin.Engine {
 
 		// 获取家信息
 		v1.GET("/family", controller.FamilyHandler)
-		// 根据id获取家信息
+		// 根据家id获取家信息
 		v1.GET("/family/:id", controller.FamilyDetailHandler)
+		// 根据用户id获取用户家信息
+		v1.GET("/family/myFamily/:user_id", controller.MyFamilyHandler)
 
 		// 发布文章
 		v1.POST("/post", controller.CreatePostHandler)

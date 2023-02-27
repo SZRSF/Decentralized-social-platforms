@@ -1,26 +1,27 @@
-CREATE TABLE `user`
-(
-    `user_id`       bigint(20)          NOT NULL COMMENT '用户ID',
-    `user_name`     varchar(20)         NOT NULL COMMENT '用户名',
-    `phone_num`     varchar(11)         NULL COMMENT '手机号码',
-    `emil`          varchar(64)         NULL COMMENT '邮箱',
-    `gender`        tinyint(4)          NULL COMMENT '性别',
-    `user_password` varchar(64)         NULL COMMENT '用户密码',
-    `head_img`      varchar(255)        NULL COMMENT '头像地址',
-    `works_count`   int(15)             NOT NULL DEFAULT 0 COMMENT '作品数量',
-    `follow_count`  int(15)             NOT NULL DEFAULT 0 COMMENT '关注数量',
-    `fans_count`  int(15)               NOT NULL DEFAULT 0 COMMENT '粉丝数量',
-    `like_count`    int(20)             NOT NULL DEFAULT 0 COMMENT '获赞数量',
-    `collect_count` int(20)             NOT NULL DEFAULT 0 COMMENT '收藏',
-    `joined_family` int(20)             NOT NULL DEFAULT 0 COMMENT '加入的家',
-    `browsing_history` int(20)          NOT NULL DEFAULT 0 COMMENT '浏览记录',
-    `invite_id`     int(11)             NULL COMMENT '邀请ID',
-    `time_stamp`    bigint              NULL COMMENT '时间戳',
-    `create_time`   timestamp           NULL COMMENT '账号创建时间',
-    PRIMARY KEY (`user_id`)
-) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_general_ci;
+# CREATE TABLE `user`
+# (
+#     `user_id`       bigint(20)          NOT NULL COMMENT '用户ID',
+#     `user_name`     varchar(20)         NOT NULL COMMENT '用户名',
+#     `phone_num`     varchar(11)         NULL COMMENT '手机号码',
+#     `emil`          varchar(64)         NULL COMMENT '邮箱',
+#     `gender`        tinyint(4)          NULL COMMENT '性别',
+#     `user_password` varchar(64)         NULL COMMENT '用户密码',
+#     `head_img`      varchar(255)        NULL COMMENT '头像地址',
+#     `works_count`   int(15)             NOT NULL DEFAULT 0 COMMENT '作品数量',
+#     `follow_count`  int(15)             NOT NULL DEFAULT 0 COMMENT '关注数量',
+#     `fans_count`  int(15)               NOT NULL DEFAULT 0 COMMENT '粉丝数量',
+#     `like_count`    int(20)             NOT NULL DEFAULT 0 COMMENT '获赞数量',
+#     `collect_count` int(20)             NOT NULL DEFAULT 0 COMMENT '收藏',
+#     `joined_family` int(20)             NOT NULL DEFAULT 0 COMMENT '加入的家',
+#     `browsing_history` int(20)          NOT NULL DEFAULT 0 COMMENT '浏览记录',
+#     `invite_id`     int(11)             NULL COMMENT '邀请ID',
+#     `time_stamp`    bigint              NULL COMMENT '时间戳',
+#     `create_time`   timestamp           NULL COMMENT '账号创建时间',
+#     PRIMARY KEY (`user_id`)
+# ) ENGINE = InnoDB
+#   DEFAULT CHARSET = utf8mb4
+#   COLLATE = utf8mb4_general_ci
+#     COMMENT='用户表';
 
 # CREATE TABLE `family`
 # (
@@ -38,7 +39,8 @@ CREATE TABLE `user`
 #     UNIQUE INDEX `idx_family_name` (`family_name`)
 # ) ENGINE = InnoDB
 #   DEFAULT CHARSET = utf8mb4
-#   COLLATE = utf8mb4_general_ci;
+#   COLLATE = utf8mb4_general_ci
+#   COMMENT='家详情表';;
 
 # CREATE TABLE `post`
 # (
@@ -57,4 +59,21 @@ CREATE TABLE `user`
 #     KEY `idx_community_id` (`family_id`)
 # ) ENGINE = InnoDB
 #   DEFAULT CHARSET = utf8mb4
-#   COLLATE = utf8mb4_general_ci;
+#   COLLATE = utf8mb4_general_ci
+#   COMMENT='作品表';;
+
+CREATE TABLE user_family
+(
+    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+    `user_id`     bigint(20)  NOT NULL COMMENT '用户ID',
+    `family_id`   int(11)  NOT NULL COMMENT '频道ID',
+    is_owner BOOLEAN NOT NULL DEFAULT false COMMENT '是否为拥有者',
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+    FOREIGN KEY (user_id) REFERENCES user(user_id),
+    FOREIGN KEY (family_id) REFERENCES family(family_id),
+    UNIQUE KEY (user_id, family_id)
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_general_ci
+COMMENT ='用户关注家中间表';

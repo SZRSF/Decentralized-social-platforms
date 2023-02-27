@@ -10,3 +10,13 @@ export const getFamilyList = params => {
     params
   })
 }
+
+/**
+ * 获取我的家列表
+ */
+export const getMyFamilyList = userId => {
+  return request({
+    method: 'GET',
+    url: `/family/myFamily/${userId}`
+  })
+}

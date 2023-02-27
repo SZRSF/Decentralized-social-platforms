@@ -13,3 +13,7 @@ func GetFamilyList() ([]*models.Family, error) {
 func GetFamilyDetail(id int64) (*models.FamilyDetail, error) {
 	return mysql.GetFamilyDetailByID(id)
 }
+
+func GetMyFamily(userId int64) ([]*models.Family, error) {
+	return mysql.GetMyFamily(userId)
+}

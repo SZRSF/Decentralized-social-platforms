@@ -1,11 +1,11 @@
-name: "Service"
+name: "service"
 mode: "dev"
 version: "v0.0.1"
 start_time: "2022-02-01"
 port: 8082
 
 auth:
-#  定义token过期时间
+  #  定义token过期时间
   jwt_expire: 8760
 
 
@@ -16,16 +16,16 @@ log:
   max_age: 30
   max_backups: 7
 mysql:
-  host: ""
-  port: 
-  user: ""
-  password: ""
-  dbname: ""
+  host: "gz-cdb-nfesd8ox.sql.tencentcdb.com"
+  port: 63916
+  user: "root"
+  password: "zzc13710302619"
+  dbname: "decentralized_social_platforms"
   max_open_conns: 200
   max_idle_conns: 50
 redis:
-  host: ""
-  port: 
-  password: ""
+  host: "sh-crs-nmrfquce.sql.tencentcdb.com"
+  port: 24531
+  password: "zzc13710302619"
   db: 0
   poll_size: 100

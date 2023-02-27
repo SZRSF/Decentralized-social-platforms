@@ -2,17 +2,30 @@
   <van-cell-group  class="works-cell-group" inset>
     <van-cell class="works-item">
       <div slot="title" class="title">
-        <van-image
-          round
-          width="1rem"
-          height="1rem"
-          src="https://img01.yzcdn.cn/vant/cat.jpeg"
-        />
+        <van-row>
+          <van-col span="4">
+            <van-image
+              round
+              width="1rem"
+              height="1rem"
+              fit="cover"
+              :src= "works.family.headImg"
+            />
+          </van-col>
+          <van-col span="8">
+            <span> {{works.family.name}} </span>
+            <div>
+              <span> 关注：  作品： </span>
+            </div>
+          </van-col>
+        </van-row>
       </div>
       <div slot="label">
         <div>
-          <span>{{ works.author_name }}</span>
-          <span>{{works.create_time}}</span>
+          <span>{{ works.title}}</span>
+        </div>
+        <div>
+          <span>{{ summarize(works.content)}}</span>
         </div>
       </div>
     </van-cell>
@@ -28,6 +41,12 @@ export default {
     works: {
       type: Object,
       require: true
+    }
+  },
+  methods: {
+    // 只显示文章前50个字
+    summarize (content) {
+      return content.slice(0, 50) + '...'
     }
   }
 }
