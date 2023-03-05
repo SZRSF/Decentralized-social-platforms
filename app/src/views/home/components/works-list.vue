@@ -50,7 +50,7 @@ export default {
       loading: false, // 控制加载中 loading 状态
       finished: false, // 控制加载结束的状态
       worksPage: 1, // 页数
-      worksSize: 5, // 每页数据
+      worksSize: 4, // 每页数据
       isFreshLoading: false, // 控制下拉刷新的状态
       refreshSuccessText: '' // 下拉刷新提示文本
     }

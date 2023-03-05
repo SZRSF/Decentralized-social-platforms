@@ -35,8 +35,19 @@ const routes = [
         path: '/mine',
         name: 'mine',
         component: () => import('@/views/mine')
+      },
+      {
+        path: '/post',
+        name: 'post',
+        component: () => import('@/views/post')
       }
     ]
+  },
+  {
+    path: '/works/:worksId',
+    name: 'works',
+    component: () => import('@/views/works'),
+    props: true // 开启 Props 传参， 说白了就是把路由参数映射到组件的 props 数据中
   }
 ]
 

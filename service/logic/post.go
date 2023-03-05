@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"zengzhicheng/Decentralized-social-platforms/dao/ipfs"
 	"zengzhicheng/Decentralized-social-platforms/dao/mysql"
 	"zengzhicheng/Decentralized-social-platforms/models"
 	"zengzhicheng/Decentralized-social-platforms/pkg/snowflake"
@@ -8,12 +9,12 @@ import (
 	"go.uber.org/zap"
 )
 
-func CreatePost(p *models.Post) (err error) {
+func CreatePost(p *models.Works) (err error) {
 	// 1.生成 post id
 	p.ID = snowflake.GenID()
 	// 2.将内容保存到IPFS返回HASH值
 	p.Content = postContent(p.Content)
-	// 2.保存到数据库
+	// 3.保存到数据库
 	return mysql.CreatePost(p)
 	// 3. 返回
 }
@@ -27,7 +28,7 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 		return
 	}
 	// 根据hash值从ipfs获取帖子内容
-	post.Content = getContent(post.Content)
+	post.Content, err = getContent(post.Content)
 	// 根据作者uid查询作者信息
 	user, err := mysql.GetUserById(post.AuthorID)
 	if err != nil {
@@ -46,8 +47,8 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 	}
 	// 接口数据拼接
 	data = &models.ApiPostDetail{
-		AuthorName:   user.UserName,
-		Post:         post,
+		User:         user,
+		Works:        post,
 		FamilyDetail: family,
 	}
 	return
@@ -77,12 +78,27 @@ func GetPostList(page, size int64) (data []*models.ApiPostDetail, err error) {
 				zap.Error(err))
 			continue
 		}
+		// 根据hash值获取文章内容
+		post.Content, err = ipfs.CatIPFS(post.Content)
+		if err != nil {
+			zap.L().Error("ipfs.CatIPFS failed", zap.Error(err))
+		}
 		postDetail := &models.ApiPostDetail{
-			AuthorName:   user.UserName,
-			Post:         post,
+			User:         user,
+			Works:        post,
 			FamilyDetail: family,
 		}
 		data = append(data, postDetail)
 	}
 	return
+}
+
+func GetFamilyID(familyName string) (familyID int64, err error) {
+	// 根据家名称查询家ID
+	familyID, err = mysql.GetFamilyID(familyName)
+	if err != nil {
+		zap.L().Error("mysql.GetFamilyDetailByID(post.FamilyID) failed", zap.Error(err))
+		return
+	}
+	return familyID, err
 }

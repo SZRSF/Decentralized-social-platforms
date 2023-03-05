@@ -37,10 +37,11 @@ func SetupRouter() *gin.Engine {
 		v1.GET("/family/myFamily/:user_id", controller.MyFamilyHandler)
 
 		// 发布文章
+		v1.POST("/post/image", controller.PostImageHandler)
 		v1.POST("/post", controller.CreatePostHandler)
 		// 根据id返回文章信息
 		v1.GET("/post/:id", controller.GetPostDetailHandler)
-		// 获取作品信息
+		// 获取作品信息列表
 		v1.GET("/posts/", controller.GetPostListHandler)
 	}
 

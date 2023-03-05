@@ -59,7 +59,7 @@ export default {
         const { data } = await getMyFamilyList(this.$store.state.user.user.user_id)
         this.myFamilyList = data.data
       } catch (err) {
-        this.$toast('获取家列表失败')
+        this.$toast('获取我的家列表失败')
       }
     }
   }

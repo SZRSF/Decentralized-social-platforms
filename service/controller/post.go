@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"strconv"
 	"zengzhicheng/Decentralized-social-platforms/logic"
 	"zengzhicheng/Decentralized-social-platforms/models"
@@ -13,11 +14,11 @@ import (
 // CreatePostHandler 创建作品的处理函数
 func CreatePostHandler(c *gin.Context) {
 	// 1.获取参数及参数的校验
-
 	p := new(models.Post)
+	works := new(models.Works)
 	if err := c.ShouldBindJSON(p); err != nil {
 		zap.L().Debug(" c.ShouldBindJSON(p) error", zap.Any("err", err))
-		zap.L().Error("create post with invalid parm")
+		zap.L().Error("create post with invalid param")
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
@@ -27,9 +28,18 @@ func CreatePostHandler(c *gin.Context) {
 		ResponseError(c, CodeNeedLogin)
 		return
 	}
-	p.AuthorID = userID
+	works.AuthorID = userID
+	// 从 c 取到作品归属家id
+	familyID, err := logic.GetFamilyID(p.FamilyName)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	works.FamilyID = familyID
+	works.Content = p.Content
+	works.Title = p.Title
 	// 2.创建帖子
-	if err := logic.CreatePost(p); err != nil {
+	if err := logic.CreatePost(works); err != nil {
 		zap.L().Error("logic.CreatePost(p) failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
 		return
@@ -37,6 +47,19 @@ func CreatePostHandler(c *gin.Context) {
 
 	// 3.返回响应
 	ResponseSuccess(c, nil)
+}
+
+// PostImageHandler 上传照片
+func PostImageHandler(c *gin.Context) {
+	file, err := c.FormFile("file")
+	if err != nil {
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	response, err := logic.PostImage(file)
+	fmt.Println(response)
+	// 3.返回响应
+	ResponseSuccess(c, response)
 }
 
 // GetPostDetailHandler 获取作品详情的处理函数

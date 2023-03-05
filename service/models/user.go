@@ -27,3 +27,9 @@ type ApiUser struct {
 	*User `json:"user"` // 嵌入用户数据
 
 }
+
+// WorksUser 作品中显示的作者信息
+type WorksUser struct {
+	UserName string `json:"username" db:"user_name" `
+	HeadImg  string `json:"head_img" db:"head_img"`
+}

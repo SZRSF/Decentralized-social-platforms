@@ -46,3 +46,14 @@ func GetMyFamily(userId int64) (myFamilyList []*models.Family, err error) {
 	}
 	return myFamilyList, err
 }
+
+// GetFamilyID 根据家名字查询家id
+func GetFamilyID(familyName string) (familyID int64, err error) {
+	sqlStr := `select family_id from family where family_name = ?`
+	if err := db.Get(&familyID, sqlStr, familyName); err != nil {
+		if err == sql.ErrNoRows {
+			err = ErrorInvalidID
+		}
+	}
+	return familyID, err
+}
