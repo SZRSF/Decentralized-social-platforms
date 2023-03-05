@@ -16,16 +16,16 @@ log:
   max_age: 30
   max_backups: 7
 mysql:
-  host: "gz-cdb-nfesd8ox.sql.tencentcdb.com"
-  port: 63916
+  host: ""
+  port: 
   user: "root"
-  password: "zzc13710302619"
+  password: ""
   dbname: "decentralized_social_platforms"
   max_open_conns: 200
   max_idle_conns: 50
 redis:
-  host: "sh-crs-nmrfquce.sql.tencentcdb.com"
-  port: 24531
-  password: "zzc13710302619"
+  host: ""
+  port: 
+  password: ""
   db: 0
   poll_size: 100
