@@ -20,7 +20,7 @@ func CreatePost(p *models.Works) (err error) {
 }
 
 // GetPostById 根据作品id查询帖子详情
-func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
+func GetPostById(pid, followerId int64) (data *models.ApiPostDetail, err error) {
 	// 查询并组合我们接口想用的数据
 	post, err := mysql.GetPostById(pid)
 	if err != nil {
@@ -45,8 +45,15 @@ func GetPostById(pid int64) (data *models.ApiPostDetail, err error) {
 			zap.Error(err))
 		return
 	}
+	// 根据登录用户Id和作品发布者Id获取登录用户是否关注作品发布者
+	followingId := post.AuthorID
+	isFollowed, err := mysql.GetIsFollowed(followerId, followingId)
+	// 查询登录用户是否关注此文章
+	isCollected, err := mysql.IsArticleCollected(followerId, post.ID)
 	// 接口数据拼接
 	data = &models.ApiPostDetail{
+		IsCollected:  isCollected,
+		IsFollowed:   isFollowed,
 		User:         user,
 		Works:        post,
 		FamilyDetail: family,
@@ -93,6 +100,7 @@ func GetPostList(page, size int64) (data []*models.ApiPostDetail, err error) {
 	return
 }
 
+// GetFamilyID 根据家名称查家id
 func GetFamilyID(familyName string) (familyID int64, err error) {
 	// 根据家名称查询家ID
 	familyID, err = mysql.GetFamilyID(familyName)
@@ -101,4 +109,24 @@ func GetFamilyID(familyName string) (familyID int64, err error) {
 		return
 	}
 	return familyID, err
+}
+
+// AddCollect 收藏作品
+func AddCollect(postId, followerId int64) error {
+	err := mysql.CollectWorks(followerId, postId)
+	if err != nil {
+		zap.L().Error("mysql.CollectWorks(followerId, postId) failed", zap.Error(err))
+		return nil
+	}
+	return nil
+}
+
+// DeleteCollect 取消收藏作品
+func DeleteCollect(followerId, postId int64) error {
+	err := mysql.CancelCollectWorks(followerId, postId)
+	if err != nil {
+		zap.L().Error("mysql.CancelCollectWorks(followerId, postId) failed", zap.Error(err))
+		return nil
+	}
+	return nil
 }

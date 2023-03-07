@@ -33,3 +33,7 @@ type WorksUser struct {
 	UserName string `json:"username" db:"user_name" `
 	HeadImg  string `json:"head_img" db:"head_img"`
 }
+
+type FollowUser struct {
+	Target int64 `json:"target,string"`
+}

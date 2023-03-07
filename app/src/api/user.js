@@ -26,3 +26,24 @@ export const getUserInfo = id => {
     // }
   })
 }
+
+/**
+ * 关注用户
+ */
+export const addFollow = target => {
+  return request({
+    method: 'POST',
+    url: '/user/followings',
+    data: target
+  })
+}
+
+/**
+ * 取消关注用户
+ */
+export const deleteFollow = target => {
+  return request({
+    method: 'DELETE',
+    url: `/user/followings/${target}`
+  })
+}

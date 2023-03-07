@@ -94,3 +94,56 @@ func UserDetailHandler(c *gin.Context) {
 	}
 	ResponseSuccess(c, data)
 }
+
+// AddFollowHandler 关注用户
+func AddFollowHandler(c *gin.Context) {
+	// 1.被关注者的id
+	target := new(models.FollowUser)
+	if err := c.ShouldBindJSON(target); err != nil {
+		zap.L().Debug(" c.ShouldBindJSON(target) error", zap.Any("err", err))
+		zap.L().Error("create target with invalid param")
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	followingId := target.Target
+	// 登录用户ID
+	followerId, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("CtxUserIDKey failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 2.关注用户事件
+	data, err := logic.AddFollow(followerId, followingId)
+	if err != nil {
+		zap.L().Error(" logic.AddFollow", zap.Error(err))
+		ResponseError(c, CodeServerBusy) // 不轻易把服务端报错暴露给外面
+		return
+	}
+	ResponseSuccess(c, data)
+}
+
+// DeleteFollowHandler 取消关注用户
+func DeleteFollowHandler(c *gin.Context) {
+	// 1.被关注者的id
+	idStr := c.Param("target")
+	followingId, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+	}
+	// 登录用户ID
+	followerId, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("CtxUserIDKey failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 2.取消关注用户事件
+	data, err := logic.DeleteFollow(followerId, followingId)
+	if err != nil {
+		zap.L().Error("logic.DeleteFollow", zap.Error(err))
+		ResponseError(c, CodeServerBusy) // 不轻易把服务端报错暴露给外面
+		return
+	}
+	ResponseSuccess(c, data)
+}

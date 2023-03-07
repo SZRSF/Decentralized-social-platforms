@@ -1,7 +1,0 @@
-{
-  "dependencies": {
-    "qs": "^6.11.0",
-    "save": "^2.9.0",
-    "vue-quill-editor": "^3.0.6"
-  }
-}

@@ -62,18 +62,51 @@
 #   COLLATE = utf8mb4_general_ci
 #   COMMENT='作品表';;
 
-CREATE TABLE user_family
+# CREATE TABLE user_family
+# (
+#     `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
+#     `user_id`     bigint(20)  NOT NULL COMMENT '用户ID',
+#     `family_id`   int(11)  NOT NULL COMMENT '频道ID',
+#     is_owner BOOLEAN NOT NULL DEFAULT false COMMENT '是否为拥有者',
+#     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+#     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+#     FOREIGN KEY (user_id) REFERENCES user(user_id),
+#     FOREIGN KEY (family_id) REFERENCES family(family_id),
+#     UNIQUE KEY (user_id, family_id)
+# ) ENGINE = InnoDB
+#   DEFAULT CHARSET = utf8mb4
+#   COLLATE = utf8mb4_general_ci
+# COMMENT ='用户关注家中间表';
+
+# CREATE TABLE `user_follow`
+# (
+#     `id`           bigint(20)    NOT NULL AUTO_INCREMENT COMMENT '关注ID',
+#     `follower_id`  bigint(20)    NOT NULL COMMENT '关注者ID',
+#     `following_id` bigint(20)    NOT NULL COMMENT '被关注者ID',
+#     `status`       tinyint(1) NOT NULL COMMENT '关注状态，0为未关注，1为已关注，2为互相关注',
+#     `created_at`   datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '关注时间',
+#     PRIMARY KEY (`id`),
+#     UNIQUE KEY `uk_follower_following` (`follower_id`, `following_id`),
+#     KEY `idx_follower_id` (`follower_id`),
+#     KEY `idx_following_id` (`following_id`)
+# ) ENGINE = InnoDB
+#   DEFAULT CHARSET = utf8mb4
+#   COLLATE = utf8mb4_general_ci
+#   COMMENT ='用户关注表';
+
+CREATE TABLE `user_collection`
 (
-    `id`          bigint(20) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
-    `user_id`     bigint(20)  NOT NULL COMMENT '用户ID',
-    `family_id`   int(11)  NOT NULL COMMENT '频道ID',
-    is_owner BOOLEAN NOT NULL DEFAULT false COMMENT '是否为拥有者',
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
-    FOREIGN KEY (user_id) REFERENCES user(user_id),
-    FOREIGN KEY (family_id) REFERENCES family(family_id),
-    UNIQUE KEY (user_id, family_id)
+    `id`         bigint(20) NOT NULL AUTO_INCREMENT,
+    `user_id`    bigint(20) NOT NULL,
+    `post_id` bigint(20) NOT NULL,
+    `created_at` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_user_article` (`user_id`, `post_id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_post_id` (`post_id`),
+    CONSTRAINT `fk_user_collection_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_user_collection_post_id` FOREIGN KEY (`post_id`) REFERENCES `post` (`post_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_general_ci
-COMMENT ='用户关注家中间表';
+    COMMENT ='用户收藏表';

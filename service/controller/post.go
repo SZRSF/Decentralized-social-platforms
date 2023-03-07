@@ -72,8 +72,16 @@ func GetPostDetailHandler(c *gin.Context) {
 		ResponseError(c, CodeInvalidParam)
 		return
 	}
+
+	// 登录用户ID
+	followerId, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("CtxUserIDKey failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
 	// 2. 根据id取出帖子数据 (查数据库）
-	data, err := logic.GetPostById(pid)
+	data, err := logic.GetPostById(pid, followerId)
 	if err != nil {
 		zap.L().Error("logic.GetPostById(pid) failed", zap.Error(err))
 		ResponseError(c, CodeServerBusy)
@@ -96,4 +104,58 @@ func GetPostListHandler(c *gin.Context) {
 	}
 	ResponseSuccess(c, data)
 	// 返回响应
+}
+
+// AddCollectHandler 收藏作品
+func AddCollectHandler(c *gin.Context) {
+	// 1. 获取参数
+	works := new(models.CollectWorks)
+	if err := c.ShouldBindJSON(works); err != nil {
+		zap.L().Debug(" c.ShouldBindJSON(works) error", zap.Any("err", err))
+		zap.L().Error("create target with invalid param")
+		ResponseError(c, CodeInvalidParam)
+		return
+	}
+	postId := works.ID
+	// 登录用户ID
+	followerId, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("CtxUserIDKey failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 2. 根据id收藏文章
+	err = logic.AddCollect(postId, followerId)
+	if err != nil {
+		zap.L().Error("logic.AddCollect(pid, followerId)failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 3. 返回响应
+	ResponseSuccess(c, nil)
+}
+
+// DeleteCollectHandler 取消收藏作品
+func DeleteCollectHandler(c *gin.Context) {
+	// 1.作品id
+	idStr := c.Param("worksId")
+	worksId, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		ResponseError(c, CodeInvalidParam)
+	}
+	// 登录用户ID
+	followerId, err := getCurrentUserID(c)
+	if err != nil {
+		zap.L().Error("CtxUserIDKey failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy)
+		return
+	}
+	// 2.取消收藏事件
+	err = logic.DeleteCollect(followerId, worksId)
+	if err != nil {
+		zap.L().Error("logic.DeleteCollect failed", zap.Error(err))
+		ResponseError(c, CodeServerBusy) // 不轻易把服务端报错暴露给外面
+		return
+	}
+	ResponseSuccess(c, nil)
 }

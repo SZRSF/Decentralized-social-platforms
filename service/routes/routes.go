@@ -28,6 +28,10 @@ func SetupRouter() *gin.Engine {
 	{
 		// 获取用户信息
 		v1.GET("/user/:user_id", controller.UserDetailHandler)
+		// 关注用户
+		v1.POST("/user/followings", controller.AddFollowHandler)
+		// 取消关注用户
+		v1.DELETE("/user/followings/:target", controller.DeleteFollowHandler)
 
 		// 获取家信息
 		v1.GET("/family", controller.FamilyHandler)
@@ -43,6 +47,10 @@ func SetupRouter() *gin.Engine {
 		v1.GET("/post/:id", controller.GetPostDetailHandler)
 		// 获取作品信息列表
 		v1.GET("/posts/", controller.GetPostListHandler)
+		// 收藏作品
+		v1.POST("/works/collections", controller.AddCollectHandler)
+		// 取消收藏作品
+		v1.DELETE("/works/collections/:worksId", controller.DeleteCollectHandler)
 	}
 
 	r.NoRoute(func(c *gin.Context) {

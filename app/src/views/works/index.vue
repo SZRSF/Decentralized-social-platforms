@@ -1,7 +1,7 @@
 <template>
   <div class="works-container">
     <!-- 导航栏 -->
-    <van-nav-bar title="标题"  left-arrow>
+    <van-nav-bar  @click-left="$router.back()" left-arrow>
       <template #title>
         <van-grid direction="horizontal" icon-size="50px" :column-num="1">
           <van-grid-item   :icon="family.headImg"   :text="family.name" />
@@ -37,19 +37,31 @@
             />
           <div slot="title" class="user-name">{{user.username}}</div>
           <div slot="label" class="publish-data">{{user.create_time | relativeTime}}</div>
+          <follow-user
+            class="follow-btn"
+            :is-followed="works.is_followed"
+            :user-id="works.author_id"
+            @update-is_followed="works.is_followed = $event"
+          />
+<!--          <van-button
+            v-if="works.is_followed"
+            class="follow-btn"
+            round
+            size="small"
+            :loading="followLoading"
+            @click="onFollow"
+          >已关注</van-button>
           <van-button
+            v-else
             class="follow-btn"
             type="info"
             color="#3296fa"
             round
             size="small"
             icon="plus"
-            >关注</van-button>
-          <!--<van-button
-            class="follow-btn"
-            round
-            size="small"
-          >已关注</van-button> -->
+            :loading="followLoading"
+            @click="onFollow"
+          >关注</van-button>-->
         </van-cell>
         <!-- /用户信息 -->
 
@@ -61,9 +73,35 @@
         <div
           class="works-content markdown-body"
           v-html="works.content"
+          ref="works-content"
         ></div>
         <van-divider>正文结束</van-divider>
         <!-- /文章内容 -->
+
+        <!-- 底部区域 -->
+        <div class="works-bottom">
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+          >写评论</van-button>
+          <van-icon
+            name="comment-o"
+            info="123"
+          />
+          <collect-works
+            class="btn-item"
+            v-model="works.is_collected"
+            :works-id="works.works_id"
+          />
+          <van-button
+            class="btn-item"
+            icon="good-job-o"
+          />
+          <van-icon name="share" color="#777777"></van-icon>
+        </div>
+        <!-- /底部区域 -->
       </div>
       <!-- /加载完成 文章详情 -->
 
@@ -85,39 +123,21 @@
       </div>
       <!-- /加载失败： 其他未知错误（例如网络原因或者服务器原因) -->
     </div>
-
-    <!-- 底部区域 -->
-    <div class="works-bottom">
-      <van-button
-        class="comment-btn"
-        type="default"
-        round
-        size="small"
-        >写评论</van-button>
-      <van-icon
-        name="comment-o"
-        info="123"
-        />
-      <van-button
-        class="btn-item"
-        icon="star-o"
-      />
-      <van-button
-        class="btn-item"
-        icon="good-job-o"
-        />
-      <van-icon name="share" color="#777777"></van-icon>
-    </div>
-    <!-- /底部区域 -->
   </div>
 </template>
 
 <script>
 import { getWorksById } from '@/api/works'
+import { ImagePreview } from 'vant'
+import FollowUser from '@/components/follow-user'
+import CollectWorks from '@/components/collect-works'
 
 export default {
   name: 'worksIndex',
-  components: {},
+  components: {
+    FollowUser,
+    CollectWorks
+  },
   props: {
     worksId: {
       type: [Number, String, Object],
@@ -130,7 +150,8 @@ export default {
       works: {}, // 文章详情
       family: {}, // 家信息
       loading: true, // 加载中的 loading 状态
-      errStatus: 0 // 失败的状态码
+      errStatus: 0, // 失败的状态码
+      followLoading: false
     }
   },
   computed: {},
@@ -145,22 +166,45 @@ export default {
       this.loading = true
       try {
         const { data } = await getWorksById(this.worksId)
+
+        // 数据驱动视图不是立即的
         this.works = data.data
         this.user = data.data.user
         this.family = data.data.family
+
+        // 初始化图片点击预览
+        setTimeout(() => {
+          this.previewImage()
+        }, 0)
+
         // 请求成功， 关闭 loading
         // this.loading = false
       } catch (err) {
         if (err.data && err.data.code === 1004) {
           this.errStatus = 404
         }
-        // this.loading = false
-        console.log('获取数据失败', err)
       }
-
       // 无论成功还是失败，都需要关闭 loading
       this.loading = false
+    },
+
+    previewImage () {
+      // 得到所有的img 节点
+      const worksContent = this.$refs['works-content']
+      const imgs = worksContent.querySelectorAll('img')
+      const images = []
+      imgs.forEach((img, index) => {
+        images.push(img.src)
+        img.onclick = () => {
+          ImagePreview({
+            images,
+            // 起始位置， 从 0 开始
+            startPosition: index
+          })
+        }
+      })
     }
+
   }
 }
 </script>

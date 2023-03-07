@@ -66,18 +66,22 @@ export default {
         forbidClick: true, // 禁用背景点击
         duration: 0 // 持续时间， 默认是 2000 , 如果为0 则持续展示
       })
-      // 3. 提交表单请求登录
-      const { data } = await login(user)
-      if (data.code === 1000) {
-        this.$store.commit('setUser', data.data)
-        this.$toast.success('登录成功')
+      try {
+        // 3. 提交表单请求登录
+        const { data } = await login(user)
+        if (data.code === 1000) {
+          this.$store.commit('setUser', data.data)
+          this.$toast.success('登录成功')
 
-        // 登录成功，跳转原来页面
-        this.$router.back()
-      } else if (data.code === 1004) {
-        this.$toast.fail('用户名或密码错误')
-      } else {
-        this.$toast.fail('登录失败，请稍后重试')
+          // 登录成功，跳转原来页面
+          this.$router.back()
+        } else if (data.code === 1004) {
+          this.$toast.fail('用户名或密码错误')
+        } else {
+          this.$toast.fail('登录失败，请稍后重试')
+        }
+      } catch (err) {
+        this.$toast.fail(err)
       }
 
       // 4. 根据请求响应结果处理后续查操作

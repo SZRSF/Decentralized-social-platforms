@@ -78,3 +78,65 @@ func GetUserById(uid int64) (user *models.User, err error) {
 	}
 	return
 }
+
+// GetIsFollowed 查询登录用户是否关注文章作者
+func GetIsFollowed(followerId, followingId int64) (isFollowed int16, err error) {
+	sqlStr1 := `SELECT status
+		FROM user_follow
+		WHERE follower_id = ? AND following_id = ?;`
+	err = db.Get(&isFollowed, sqlStr1, followerId, followingId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			// 没有数据被找到
+			return -1, nil
+		}
+		zap.L().Error("SELECT status failed", zap.Error(err))
+		return 0, err
+	}
+	return isFollowed, err
+}
+
+// AddFollow 用户关注
+func AddFollow(followerID, followingID int64) (target int16, err error) {
+	// 判断是否已经存在关注关系
+	isFollowed, err := GetIsFollowed(followerID, followingID)
+	if err != nil {
+		return isFollowed, err
+	}
+	if isFollowed == 1 || isFollowed == 2 {
+		// 已关注或已互相关注，直接返回
+		return isFollowed, nil
+	}
+
+	if isFollowed == -1 {
+		// 不存在关注关系，插入一条记录
+		sqlStr := `INSERT INTO user_follow (follower_id, following_id, status)
+               VALUES (?, ?, 1)`
+		_, err = db.Exec(sqlStr, followerID, followingID)
+		if err != nil {
+			zap.L().Error(" Exec failed", zap.Error(err))
+			return isFollowed, err
+		}
+		return isFollowed, nil
+	}
+	// status = 0，改为1
+	sqlStr := `UPDATE user_follow SET status=1 WHERE follower_id=? AND following_id=?`
+	_, err = db.Exec(sqlStr, followerID, followingID)
+	if err != nil {
+		zap.L().Error(" Exec failed", zap.Error(err))
+		return isFollowed, err
+	}
+	return isFollowed, nil
+}
+
+// DeleteFollow 取消关注用户
+func DeleteFollow(followerID, followingID int64) (target int16, err error) {
+
+	sqlStr := `UPDATE user_follow SET status=0 WHERE follower_id=? AND following_id=?`
+	_, err = db.Exec(sqlStr, followerID, followingID)
+	if err != nil {
+		return target, err
+	}
+	target = 0
+	return target, nil
+}

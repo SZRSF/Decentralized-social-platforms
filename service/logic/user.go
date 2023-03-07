@@ -62,3 +62,15 @@ func GetUserDetail(id int64) (user *models.User, err error) {
 	user, err = mysql.GetUserById(id)
 	return user, err
 }
+
+// AddFollow 关注用户逻辑函数
+func AddFollow(followerId, followingId int64) (target int16, err error) {
+	target, err = mysql.AddFollow(followerId, followingId)
+	return target, err
+}
+
+// DeleteFollow 取消关注
+func DeleteFollow(followerId, followingId int64) (target int16, err error) {
+	target, err = mysql.DeleteFollow(followerId, followingId)
+	return target, err
+}
